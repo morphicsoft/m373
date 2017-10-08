@@ -1,5 +1,11 @@
 import math
 
+from logging import getLogger
+
+
+class BisectError(Exception):
+    pass
+
 
 class Exercise(object):
     def __init__(self, a, b, dp):
@@ -11,6 +17,10 @@ class Exercise(object):
     def __call__(self, *args):
         self.effort += 1
         return self.f(*args)
+
+    @property
+    def name(self):
+        return self.__class__.__name__
 
     @property
     def predicted_effort(self):
@@ -67,9 +77,9 @@ def different_sign(a, b):
     return False
 
 
-def solve(c):
-    f = c()
-    print("To solve {} to {} decimal places has predicted effort {}".format(c.__name__, f.dp, f.predicted_effort))
+def solve(f, logger=None):
+    logger = logger or getLogger('solve')
+    logger.info("To solve {} to {} decimal places has predicted effort {}".format(f.name, f.dp, f.predicted_effort))
     ar = f.a
     br = f.b
     n = f.dp
@@ -81,13 +91,13 @@ def solve(c):
             f_br = f(br)
 
         if same_sign(f_ar, f_br):
-            raise Exception("f(ar) and f(br) have the same sign. Cannot bisect f({}) and f({}.".format(ar, br))
+            raise BisectError("f(ar) and f(br) have the same sign. Cannot bisect f({}) and f({}.".format(ar, br))
         f_cr = f(cr)
         r += 1
 
         # TODO: factor out the logging/printing from the functionality (and improve on report format)
-        print("r={}\tar={:.6f}\tbr={:.6f}\tcr={:.6f}\tf(ar)={:.6f}\tf(br)={:.6f}\tf(cr)={:.6f}\tbr-ar={:.6f}"
-              .format(r, ar, br, cr, f_ar, f_br, f_cr, br - ar))
+        logger.info("r={}\tar={:.6f}\tbr={:.6f}\tcr={:.6f}\tf(ar)={:.6f}\tf(br)={:.6f}\tf(cr)={:.6f}\tbr-ar={:.6f}"
+                    .format(r, ar, br, cr, f_ar, f_br, f_cr, br - ar))
 
         if different_sign(f_ar, f_cr):
             br = cr
@@ -106,16 +116,13 @@ def solve(c):
             rcr = (rbr + rar) / 2
             f_rcr = f(rcr)
             # TODO: full logic from procedure 2.1 step d
-            print("r=*\tar*={:.6f}\tbr*={:.6f}\tcr*={:.6f}\tf(cr*)={:.6f}" \
-                  .format(rar, rbr, rcr, f_rcr))
+            logger.info("r=*\tar*={:.6f}\tbr*={:.6f}\tcr*={:.6f}\tf(cr*)={:.6f}".format(rar, rbr, rcr, f_rcr))
 
             if different_sign(f_ar, f_rcr):
                 solution = rar
             else:
                 solution = rbr
-            print("The solution is {} to {} decimal places.".format(solution, n))
-            print("Actual effort was {}.".format(f.effort))
-            return
+            logger.info("The solution is {} to {} decimal places.".format(solution, n))
+            logger.info("Actual effort was {}.".format(f.effort))
 
-
-solve(Exercise_2_1)
+            return solution

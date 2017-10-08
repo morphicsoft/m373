@@ -1,0 +1,7 @@
+include *.py 
+recursive-include m373 *.py
+include requirements.txt
+include *.md
+include *.txt
+include tox.ini
+recursive-include test *.py
