@@ -20,7 +20,7 @@ class Exercise(object):
 
 class Exercise_2_1(Exercise):
     def __init__(self):
-        super(Exercise_2_1, self).__init__(0, 3, 0.4, 3)
+        super(Exercise_2_1, self).__init__(0.3, 0.4, 3)
 
     def f(self, x):
         return x * math.exp(-x) - 0.25
@@ -79,20 +79,35 @@ def solve(c):
         if r == 0:
             f_ar = f(ar)
             f_br = f(br)
-        f_cr = f(cr)
 
-        print("r={}\tar={:.6f}\tbr={:.6f}\tcr={:.6f}\tf(ar)={:.6f}\tf(br)={:.6f}\tf(cr)={:.6f}\tbr-ar={:.6f}" \
+        if same_sign(f_ar, f_br):
+            raise Exception("f(ar) and f(br) have the same sign. Cannot bisect f({}) and f({}.".format(ar, br))
+        f_cr = f(cr)
+        r += 1
+
+        # TODO: factor out the logging/printing from the functionality (and improve on report format)
+        print("r={}\tar={:.6f}\tbr={:.6f}\tcr={:.6f}\tf(ar)={:.6f}\tf(br)={:.6f}\tf(cr)={:.6f}\tbr-ar={:.6f}"
               .format(r, ar, br, cr, f_ar, f_br, f_cr, br - ar))
+
+        if different_sign(f_ar, f_cr):
+            br = cr
+            f_br = f_cr
+        else:
+            ar = cr
+            f_ar = f_cr
+
         if (br - ar) < 10 ** (-n):
+            # TODO: there are some unneeded function calls here, which leads to effort being higher than predicted
+            # An interesting logging approach would be to emit events, and plugin a listener to do the logging
             rar = round(ar, n)
-            f_rar = f(rar)
+            # f_rar = f(rar)
             rbr = round(br, n)
-            f_rbr = f(rbr)
+            # f_rbr = f(rbr)
             rcr = (rbr + rar) / 2
             f_rcr = f(rcr)
             # TODO: full logic from procedure 2.1 step d
-            print("r=*\tar*={:.6f}\tbr*={:.6f}\tcr*={:.6f}\tf(ar*)={:.6f}\tf(br*)={:.6f}\tf(cr*)={:.6f}" \
-                  .format(rar, rbr, rcr, f_rar, f_rbr, f_rcr))
+            print("r=*\tar*={:.6f}\tbr*={:.6f}\tcr*={:.6f}\tf(cr*)={:.6f}" \
+                  .format(rar, rbr, rcr, f_rcr))
 
             if different_sign(f_ar, f_rcr):
                 solution = rar
@@ -101,19 +116,6 @@ def solve(c):
             print("The solution is {} to {} decimal places.".format(solution, n))
             print("Actual effort was {}.".format(f.effort))
             return
-        r += 1
-
-        if same_sign(f_ar, f_br):
-            raise Exception("f(ar) and f(br) have the same sign. Cannot bisect f({}) and f({}.".format(ar, br))
-
-        if different_sign(f_ar, f_cr):
-            br = cr
-            f_br = f_cr
-        elif different_sign(f_br, f_cr):
-            ar = cr
-            f_ar = f_cr
-        else:
-            raise Exception("There is no root between {} and {}.".format(ar, br))
 
 
-solve(Exercise_2_2)
+solve(Exercise_2_1)
