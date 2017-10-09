@@ -53,9 +53,10 @@ def solve(f, *, interval, places, logger=None):
         if r == 0:
             f_ar = invoke(ar)
             f_br = invoke(br)
+            logger.info("f_ar={}, f_br={}".format(f_ar, f_br))
 
         if same_sign(f_ar, f_br):
-            raise BisectError("f(ar) and f(br) have the same sign. Cannot bisect f({}) and f({}.".format(ar, br))
+            raise BisectError("f(ar) and f(br) have the same sign. Cannot bisect f({}) and f({}).".format(ar, br))
         f_cr = invoke(cr)
         r += 1
 
