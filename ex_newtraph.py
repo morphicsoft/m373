@@ -88,7 +88,7 @@ def make_functions():
 
         return x - f(x) / df(x)
 
-    return (g, h)
+    return g, h
 
 
 iterate.solve(f, estimate=1.0, iterations=5, logger=logger)

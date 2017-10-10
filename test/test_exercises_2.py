@@ -69,3 +69,26 @@ class TestIterate(TestCase):
         # cannot be used for solving sqrt(2) as it does not converge
         s = iterate.solve(g, estimate=1.0, iterations=5, logger=logger)
         self.assertNotAlmostEqual(s, 1.414, 3)
+
+    def test_solve_ex_2_11(self):
+        """
+        Two rearrangements of x^3 + 4x^2 - 10 = 0
+        """
+
+        def f_a(x):
+            return x - x ** 3 - 4 * x ** 2 + 10
+
+        def f_b(x):
+            inner = 10 / x - 4 * x
+            logger.info("Performing sqrt({})".format(inner))
+            return math.sqrt(inner)
+
+        logger.info('-' * 40)
+        # f_a(x) cannot be used to solve x^3 + 4x^2 - 10 = 0 as it diverges and oscillates.
+        iterate.solve(f_a, estimate=1.5, iterations=5, logger=logger)
+        logger.info('-' * 40)
+
+        with self.assertRaises(ValueError):
+            # f_b(x) cannot be used to solve x^3 + 4x^2 - 10 = 0 as the 3rd iteration attempts to root a -ve number.
+            iterate.solve(f_b, estimate=1.5, iterations=5, logger=logger)
+        logger.info('-' * 40)
