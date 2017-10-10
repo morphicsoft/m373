@@ -43,7 +43,14 @@ def solve(f, *, interval, places, logger=None):
 
     effort = 0
 
-    def invoke(x):
+    def apply_f(x):
+        """
+        Simple wrapper around the function to be solved, closing over the effort variable in order to increment
+        per-function application.
+
+        :param x: Free variable passed into f(x)
+        :return: Results of applying f to x.
+        """
         nonlocal effort
         effort += 1
         return f(x)
@@ -51,12 +58,12 @@ def solve(f, *, interval, places, logger=None):
     while True:
         cr = (br + ar) / 2
         if r == 0:
-            f_ar = invoke(ar)
-            f_br = invoke(br)
+            f_ar = apply_f(ar)
+            f_br = apply_f(br)
 
         if same_sign(f_ar, f_br):
             raise BisectError("f(ar) and f(br) have the same sign. Cannot bisect f({}) and f({}.".format(ar, br))
-        f_cr = invoke(cr)
+        f_cr = apply_f(cr)
         r += 1
 
         # TODO: factor out the logging/printing from the functionality (and improve on report format)
@@ -71,14 +78,12 @@ def solve(f, *, interval, places, logger=None):
             f_ar = f_cr
 
         if (br - ar) < 10 ** (-n):
-            # TODO: there are some unneeded function calls here, which leads to effort being higher than predicted
-            # An interesting logging approach would be to emit events, and plugin a listener to do the logging
             rar = round(ar, n)
             # f_rar = f(rar)
             rbr = round(br, n)
             # f_rbr = f(rbr)
             rcr = (rbr + rar) / 2
-            f_rcr = invoke(rcr)
+            f_rcr = apply_f(rcr)
             # TODO: full logic from procedure 2.1 step d
             logger.info("r=*\tar*={:.6f}\tbr*={:.6f}\tcr*={:.6f}\tf(cr*)={:.6f}".format(rar, rbr, rcr, f_rcr))
 
