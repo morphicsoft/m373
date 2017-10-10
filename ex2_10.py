@@ -1,10 +1,7 @@
-import math
-
 from m373 import iterate
 
 
 class PrintLogger:
-
     DISPLAY_LOG = True
 
     def info(self, msg):
@@ -16,7 +13,7 @@ logger = PrintLogger()
 
 
 def g(x):
-    return x**2 + x - 2
+    return x ** 2 + x - 2
 
 
 iterate.solve(g, estimate=1.0, iterations=5, logger=logger)
