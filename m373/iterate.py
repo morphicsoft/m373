@@ -1,6 +1,6 @@
 def solve(g, *, estimate, iterations=5, logger=None, counter=0):
     if iterations == 0:
-        return g(estimate)
+        return estimate
     if counter == 0:
         logger.info("x_{} = {:.6f}".format(counter, estimate))
         counter += 1

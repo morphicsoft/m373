@@ -38,15 +38,3 @@ class TestIterate(TestCase):
         solution = iterate.solve(g, estimate=0.35, iterations=4, logger=test_logger)
 
         self.assertAlmostEqual(solution, 0.357, 3)
-
-    def test_solve_ex_2_9(self):
-
-        def f_i(x):
-            return 0.2 * x**2 + 0.4
-
-        def f_ii(x):
-            return math.sqrt(5 * x - 2)
-
-        solution = iterate.solve(f_i, estimate=0.5, iterations=5, logger=test_logger)
-
-        print(solution)
