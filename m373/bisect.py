@@ -9,19 +9,11 @@ class BisectError(Exception):
 
 
 def same_sign(a, b):
-    if a < 0 and b < 0:
-        return True
-    if a >= 0 and b >= 0:
-        return True
-    return False
+    return (a < 0) == (b < 0)
 
 
 def different_sign(a, b):
-    if a < 0:
-        return b >= 0
-    elif a > 0:
-        return b <= 0
-    return False
+    return not same_sign(a, b)
 
 
 def predicted_effort(f, *, interval, places, logger=None):
