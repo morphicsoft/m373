@@ -1,4 +1,6 @@
 import sympy as sym
+import math
+from m373 import iterate
 
 
 class PrintLogger:
@@ -25,7 +27,17 @@ def g(x):
     return x - f(x) / df(x)
 
 
+def f_3_8(x):
+	return math.exp(x) - 0.5 * x - 1.6
+
+
+def d(x):
+    return 0.5 * (x**2 * math.log(x) + 1)
+
+
 # iterate.solve(g, estimate=1.3, iterations=5, logger=logger)
 
 if __name__ == '__main__':
-    print(g(6.0))
+    # print(g(6.0))
+	
+	iterate.solve(d, estimate=0.5, iterations=10, logger=logger)
