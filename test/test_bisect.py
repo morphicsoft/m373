@@ -25,6 +25,7 @@ class TestBisect(TestCase):
             return x ** 3 - 0.75 * x ** 2 - 4.5 * x + 4.75
 
         predicted_effort = bisect.predicted_effort(f, interval=(1.5, 2.0), places=3, logger=test_logger)
+        self.assertEqual(predicted_effort, 12)
         ans = bisect.solve(f, interval=(1.5, 2.0), places=3, logger=test_logger)
 
         self.assertAlmostEqual(ans.solution, 1.779, 3)
